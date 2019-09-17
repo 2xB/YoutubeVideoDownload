@@ -25,6 +25,7 @@ import argparse
 from os import path
 from urlparse import parse_qs
 from urllib2 import URLError
+import json
 
 __author__ = (
     'YU \'Johnny\' ZHOU'
@@ -40,8 +41,8 @@ class VideoInfo(object):
         request_url = 'http://www.youtube.com/get_video_info?video_id='
         if 'http://www.youtube.com/watch?v' in parse_qs(video_url).keys():
             request_url += parse_qs(video_url)['http://www.youtube.com/watch?v'][0]
-	elif 'https://www.youtube.com/watch?v' in parse_qs(video_url).keys():
-	    request_url = 'https://www.youtube.com/get_video_info?video_id='+parse_qs(video_url)['https://www.youtube.com/watch?v'][0]
+        elif 'https://www.youtube.com/watch?v' in parse_qs(video_url).keys():
+            request_url = 'https://www.youtube.com/get_video_info?video_id='+parse_qs(video_url)['https://www.youtube.com/watch?v'][0]
         elif 'v' in parse_qs(video_url).keys():
             request_url += parse_qs(video_url)['v'][0]
         else :
@@ -66,7 +67,8 @@ def title(videoinfo):
     """
     if not isinstance(videoinfo, VideoInfo):
         sys.exit('Error : method (title) invalid argument passing')
-    title = videoinfo.video_info['title'][0].decode('utf-8')
+    player_response = json.loads(videoinfo.video_info['player_response'][0])
+    title = player_response['videoDetails']['title'].decode('utf-8')
     return title
 
 def video_file_urls(videoinfo):
@@ -179,21 +181,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-            
-            
-    
-    
-   
-    
-    
-    
-    
-
-
-
-
-
-
-
